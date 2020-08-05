@@ -1,0 +1,40 @@
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+# simTransmission
+
+<!-- badges: start -->
+
+<!-- badges: end -->
+
+The goal of simTransmission is to provides functions to simulate,
+summarize and plot transmission network and its corresponding
+phylogenetic tree.
+
+## Installation
+
+You can install simTransmission in R using the following command:
+
+``` r
+devtools::install_github('Huimin-stat/simTransmission')
+```
+
+## Example
+
+This is a basic example which shows you how to simulate a transmission
+and plot the transmission network:
+
+``` r
+library(simTransmission)
+#> Registered S3 method overwritten by 'GGally':
+#>   method from   
+#>   +.gg   ggplot2
+trans <- simTransmission(inf_rate = c(0.423,0.3), inf_rate_time = c(0,50), diag_rate = 0.143, rec_rate_asy = 0.052, rec_rate_sym = 0.0476, death_prop = 0.05, death_rate = 0.0357, inf_rate_diag = 0.02, asy_prop = 0.179, ngeneration = 7)
+trunc <- timeTruncate(trans, 12)
+plotTransNet(trunc$truncTM, trunc$index_sym_latent, trunc$index_sym_diagnosed, trunc$index_sym_recovered, trunc$index_asy_infectious, trunc$index_asy_recovered, trunc$index_dead)
+```
+
+<img src="man/figures/README-example-1.png" width="100%" />
+
+In that case, don’t forget to commit and push the resulting figure
+files, so they display on GitHub\!
