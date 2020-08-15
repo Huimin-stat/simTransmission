@@ -32,13 +32,30 @@ devtools::install_github('Huimin-stat/simTransmission')
 
 This is a basic example which shows you how to simulate a transmission and plot the transmission network:
 
-```{r example}
+```{r example, message=FALSE, dpi=200}
 library(simTransmission)
-trans <- simTransmission(inf_rate = c(0.423,0.3), inf_rate_time = c(0,50), diag_rate = 0.143, rec_rate_asy = 0.052, rec_rate_sym = 0.0476, death_prop = 0.05, death_rate = 0.0357, inf_rate_diag = 0.02, asy_prop = 0.179, ngeneration = 7)
-trunc <- timeTruncate(trans, 12)
-plotTransNet(trunc$truncTM, trunc$index_sym_latent, trunc$index_sym_diagnosed, trunc$index_sym_recovered, trunc$index_asy_infectious, trunc$index_asy_recovered, trunc$index_dead)
+set.seed(23)
+transmission <- simTransmission(inf_rate = c(0.423,0.3), inf_rate_time = c(0,50), diag_rate = 0.143, rec_rate_asy = 0.052, rec_rate_sym = 0.0476, death_prop = 0.05, death_rate = 0.0357, inf_rate_diag = 0.02, asy_prop = 0.179, ngeneration = 8)
+transmission1 <- simTransmission(inf_rate = c(0.423,0.3), inf_rate_time = c(0,50), diag_rate = 0.143, rec_rate_asy = 0.052, rec_rate_sym = 0.0476, death_prop = 0.05, death_rate = 0.0357, inf_rate_diag = 0.02, asy_prop = 0, ngeneration = 8)
+times <- c(15, 30, 45, 60, 75)
+cases.plot(transmatrix = transmission, times)
+cases.plot(transmatrix = transmission1, times)
+
+trunc <- timeTruncate(transmission1, 7)
+
+set.seed(23)
+(modeltree <- modelTreefromTransmission(trunc$truncTM))
+(coaltree <- simCoalModeltree(1, modeltree, 0.8))
+plotTree(modeltree)
+plotTree(coaltree)
+
+trunc1 <- timeTruncate(transmission, 15)
+plotTransNet(trunc1$truncTM, trunc1$index_sym_latent, trunc1$index_sym_diagnosed, trunc1$index_sym_recovered, trunc1$index_asy_infectious, trunc1$index_asy_recovered, trunc1$index_dead)
+
+trunc2 <- timeTruncate(transmission1, 15)
+plotTransNet(trunc2$truncTM, trunc2$index_sym_latent, trunc2$index_sym_diagnosed, trunc2$index_sym_recovered, trunc2$index_asy_infectious, trunc2$index_asy_recovered, trunc1$index_dead)
 
 ```
 
 
-In that case, don't forget to commit and push the resulting figure files, so they display on GitHub!
+
