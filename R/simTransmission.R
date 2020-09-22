@@ -161,6 +161,7 @@ simTransmission = function(inf_rate, inf_rate_time = 0, diag_rate, rec_rate_asy,
   transmatrix[1,] = currentout$transnet
   
   currentmatrix = transmatrix
+  ngen = 1
   
   for(i in 1:ngeneration){
     if(length(dim(currentmatrix)) == 0) currentmatrix = t(as.matrix(currentmatrix))
@@ -171,11 +172,13 @@ simTransmission = function(inf_rate, inf_rate_time = 0, diag_rate, rec_rate_asy,
     if(i == ngeneration) nextm[,3] = 0
     transmatrix = rbind(transmatrix,nextm)
     currentmatrix = nextm
+    ngen = ngen + 1
   }
   
   row.names(transmatrix) = rep("",dim(transmatrix)[1])
   
   if(nrow(transmatrix) == 1) {warning('Inital infective individual recovered without infecting anyone. Simulate another transmission tree.')}
+  else if (ngen < ngeneration) {warning(paste0('Pandemic is over within ', paste0(ngeneration, paste0(' generation, it only survive for ', paste0(ngen, ' generations. Simulate another transmission tree')))))}
   else {return(transmatrix)}
 }
 
@@ -187,7 +190,7 @@ simTransmission = function(inf_rate, inf_rate_time = 0, diag_rate, rec_rate_asy,
 #' @param plot a logical parameter indicating whether to produce barplot or not (It's recommended to set to FALSE if vector "times" has a length longer than 15)
 #' @return barplots (optional) and summary tables illustrating number of cases of six groups (asymptomatic_infectious, asymptomatic_recovered, symptomatic_latent, symptomatic_diagnosed, symptomatic_recovered, dead) by truncated times.
 #' @export
-cases.plot = function(transmatrix, times, plot = TRUE)
+cases.plot = function(transmatrix, times, plot = FALSE)
 {
   if (max(transmatrix[,2]) <= min(times)) 
   {
